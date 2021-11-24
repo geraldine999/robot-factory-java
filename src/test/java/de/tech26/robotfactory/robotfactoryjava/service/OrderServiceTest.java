@@ -11,6 +11,7 @@ import de.tech26.robotfactory.robotfactoryjava.exceptions.MoreThanOneOptionForAT
 import de.tech26.robotfactory.robotfactoryjava.exceptions.NotEnoughPartsException;
 import de.tech26.robotfactory.robotfactoryjava.exceptions.RanOutOfStockException;
 import de.tech26.robotfactory.robotfactoryjava.utils.RobotFactoryDataTestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -129,6 +130,22 @@ public class OrderServiceTest {
     public void shouldReturnTotalPrice(){
         OrderRequest orderRequest = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestExample();
         assertEquals(160.11,orderService.calculateTotalPriceAndUpdateStock(orderRequest));
+    }
+
+
+    @BeforeEach
+    public void resetStock(){
+        RobotPartsEnum.A.setStock(9);
+        RobotPartsEnum.B.setStock(7);
+        RobotPartsEnum.C.setStock(0);
+        RobotPartsEnum.D.setStock(1);
+        RobotPartsEnum.E.setStock(3);
+        RobotPartsEnum.F.setStock(2);
+        RobotPartsEnum.G.setStock(15);
+        RobotPartsEnum.H.setStock(7);
+        RobotPartsEnum.I.setStock(92);
+        RobotPartsEnum.J.setStock(15);
+
     }
 
 
