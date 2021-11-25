@@ -39,7 +39,7 @@ public class OrderControllerTest {
     @Test
     public void testCreateOrder() throws Exception {
 
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestExample();
+        OrderRequest orderRequest = new OrderRequest(RobotFactoryDataTestUtils.getWellConfiguredOrderRequestListExample());
         Mockito.when(this.orderService.createOrder(orderRequest)).thenReturn(null);
         String content = (new ObjectMapper()).writeValueAsString(orderRequest);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/orders")
@@ -51,7 +51,7 @@ public class OrderControllerTest {
         ResultActions actualPerformResult = buildResult.perform(requestBuilder);
 
 
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().isOk());
+        actualPerformResult.andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
 

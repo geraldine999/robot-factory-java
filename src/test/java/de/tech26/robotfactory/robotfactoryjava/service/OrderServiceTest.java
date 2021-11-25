@@ -20,8 +20,6 @@ import java.util.List;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -41,36 +39,35 @@ public class OrderServiceTest {
         List<RobotPartsEnum> robotPartsList = new ArrayList<>();
         robotPartsList.add(RobotPartsEnum.G);
         robotPartsList.add(RobotPartsEnum.H);
-        OrderRequest orderRequest = new OrderRequest(robotPartsList);
         //When
-        orderService.calculateTotalPriceAndUpdateStock(orderRequest);
+        orderService.updateStock(robotPartsList);
         //Then
         assertEquals(14, RobotPartsEnum.G.getStock());
         assertEquals(6, RobotPartsEnum.H.getStock());
     }
 
     @Test
-    public void shouldCreateANewOrderResponseEntityWithStatusCode201AndCorrectOrderIdAndTotal(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestExample2();
+    public void shouldCreateANewOrderResponseWithCorrectOrderIdAndTotal(){
+        OrderRequest orderRequest= new OrderRequest(RobotFactoryDataTestUtils.getWellConfiguredOrderRequestListExample2());
         OrderResponse orderResponseExpected = new OrderResponse(0, 143.56);
-        ResponseEntity<OrderResponse> orderResponseEntityExpected = new ResponseEntity<>(orderResponseExpected, HttpStatus.CREATED);
-        assertThat(orderResponseExpected).isEqualToComparingFieldByField(orderService.createOrder(orderRequest).getBody());
-        assertThat(orderResponseEntityExpected.getStatusCode()).isEqualTo(orderService.createOrder(orderRequest).getStatusCode());
+        assertThat(orderResponseExpected).isEqualToComparingFieldByField(orderService.createOrder(orderRequest));
 
     }
 
     @Test
-    public void shouldReturnTrueWhenOrderRequestIsValid(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestExample();
-        assertTrue(orderService.orderIsValid(orderRequest));
+    public void shouldNotThrowAnyExceptionWhenOrderRequestListIsValid(){
+        List<RobotPartsEnum> robotPartsList = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestListExample();
+        assertDoesNotThrow(()->{
+            orderService.validateOrder(robotPartsList);
+        });
     }
 
 
     @Test
     public void shouldThrowAMoreThanOneOptionForATypeOfPartExceptionWhenOrderRequestSpecifiesMoreThanOptionForABodyPart(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getMoreThanOneOptionForATypeOfPartOrderRequestExample();
+        List<RobotPartsEnum> robotPartsList = RobotFactoryDataTestUtils.getMoreThanOneOptionForATypeOfPartOrderRequestListExample();
         Exception exception = assertThrows(MoreThanOneOptionForATypeOfPartException.class, () -> {
-            orderService.orderIsValid(orderRequest);
+            orderService.validateOrder(robotPartsList);
         });
 
         String expectedMessage = "The order specifies more than one option for a body part. It should" +
@@ -84,9 +81,9 @@ public class OrderServiceTest {
 
     @Test
     public void shouldThrowARanOutOfStockExceptionWhenARobotPartsStockIsZero(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getAnOrderRequestWithARobotPartThatHasRanOutOfStock();
+        List<RobotPartsEnum> robotPartsList = RobotFactoryDataTestUtils.getAnOrderRequestListWithARobotPartThatHasRanOutOfStock();
         Exception exception = assertThrows(RanOutOfStockException.class, () -> {
-            orderService.orderIsValid(orderRequest);
+            orderService.validateOrder(robotPartsList);
         });
 
         String expectedMessage = "We have unfortunately ran out of stock for "+ RobotPartsEnum.C.getName();
@@ -99,9 +96,9 @@ public class OrderServiceTest {
 
     @Test
     public void shouldThrowAMorePartsExceptionWhenAmountOfRobotPartsInOrderRequestIsMoreThan4(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getMoreThan4RobotPartsOrderRequestExample();
+        List<RobotPartsEnum> robotPartsList = RobotFactoryDataTestUtils.getMoreThan4RobotPartsOrderRequestListExample();
         Exception exception = assertThrows(MorePartsException.class, () -> {
-            orderService.orderIsValid(orderRequest);
+            orderService.validateOrder(robotPartsList);
         });
 
         String expectedMessage = "The order specifies more robot parts than needed";
@@ -113,9 +110,9 @@ public class OrderServiceTest {
 
     @Test
     public void shouldThrowANotEnoughPartsExceptionWhenAmountOfRobotPartsInOrderRequestIsLessThan4(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getLessThan4RobotPartsOrderRequestExample();
+        List<RobotPartsEnum> robotPartsList  = RobotFactoryDataTestUtils.getLessThan4RobotPartsOrderRequestListExample();
         Exception exception = assertThrows(NotEnoughPartsException.class, () -> {
-            orderService.orderIsValid(orderRequest);
+            orderService.validateOrder(robotPartsList);
         });
 
         String expectedMessage = "The order does not specify enough parts to build an entire robot";
@@ -128,8 +125,8 @@ public class OrderServiceTest {
 
     @Test
     public void shouldReturnTotalPrice(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestExample();
-        assertEquals(160.11,orderService.calculateTotalPriceAndUpdateStock(orderRequest));
+        List<RobotPartsEnum> robotPartsList =  RobotFactoryDataTestUtils.getWellConfiguredOrderRequestListExample();
+        assertEquals(160.11,orderService.calculateTotalPrice(robotPartsList));
     }
 
 

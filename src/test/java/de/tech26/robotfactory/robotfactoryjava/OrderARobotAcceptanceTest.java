@@ -27,8 +27,8 @@ public class OrderARobotAcceptanceTest {
 
     @DisplayName("Should order a robot.")
     @Test
-    public void shouldCreateOrderResponseEntityWhenOrdersEndpointIsCalledWithAWellConfiguredOrderRequest(){
-        OrderRequest orderRequest = RobotFactoryDataTestUtils.getWellConfiguredOrderRequestExample();
+    public void shouldCreateOrderResponseEntityStatusCreatedWhenOrdersEndpointIsCalledWithAWellConfiguredOrderRequest(){
+        OrderRequest orderRequest = new OrderRequest(RobotFactoryDataTestUtils.getWellConfiguredOrderRequestListExample());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<OrderRequest> orderRequestHttpEntity = new HttpEntity<>(orderRequest, httpHeaders);
@@ -44,7 +44,7 @@ public class OrderARobotAcceptanceTest {
     @DisplayName("Should not allow an order with more than one option for a body part.")
     @Test
     public void shouldThrowAMoreThanOneOptionForABodyPartException(){
-        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(RobotFactoryDataTestUtils.getMoreThanOneOptionForATypeOfPartOrderRequestExample());
+        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(new OrderRequest(RobotFactoryDataTestUtils.getMoreThanOneOptionForATypeOfPartOrderRequestListExample()));
         String expectedMessage = "The order specifies more than one option for a body part. It should" +
                 " only contain ONE option for each part: face, material, arms and mobility ";
 
@@ -71,7 +71,7 @@ public class OrderARobotAcceptanceTest {
     @DisplayName("Should not allow an order with more than 4 robot parts.")
     @Test
     public void shouldThrowAMorePartsException(){
-        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(RobotFactoryDataTestUtils.getMoreThan4RobotPartsOrderRequestExample());
+        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(new OrderRequest(RobotFactoryDataTestUtils.getMoreThan4RobotPartsOrderRequestListExample()));
         String expectedMessage = "The order specifies more robot parts than needed";
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exceptionResponse.getStatusCode());
@@ -84,7 +84,7 @@ public class OrderARobotAcceptanceTest {
     @DisplayName("Should not allow an order with less than 4 robot parts.")
     @Test
     public void shouldThrowANotEnoughPartsException(){
-        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(RobotFactoryDataTestUtils.getLessThan4RobotPartsOrderRequestExample());
+        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(new OrderRequest(RobotFactoryDataTestUtils.getLessThan4RobotPartsOrderRequestListExample()));
         String expectedMessage = "The order does not specify enough parts to build an entire robot";
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exceptionResponse.getStatusCode());
@@ -97,7 +97,7 @@ public class OrderARobotAcceptanceTest {
     @DisplayName("Should inform when a robot part is out of stock.")
     @Test
     public void shouldThrowARanOutOfStockException(){
-        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(RobotFactoryDataTestUtils.getAnOrderRequestWithARobotPartThatHasRanOutOfStock());
+        ResponseEntity<RobotFactoryExceptionResponse> exceptionResponse = postOrderExpectAnException(new OrderRequest(RobotFactoryDataTestUtils.getAnOrderRequestListWithARobotPartThatHasRanOutOfStock()));
         String expectedMessage = "We have unfortunately ran out of stock for "+ RobotPartsEnum.C.getName();
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exceptionResponse.getStatusCode());
@@ -106,7 +106,6 @@ public class OrderARobotAcceptanceTest {
         assertEquals("uri=/orders", exceptionResponse.getBody().getDetails());
 
     }
-
 
 
 
