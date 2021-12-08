@@ -12,26 +12,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class RobotFactoryExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(MorePartsException.class)
-    public ResponseEntity<Object> morePartsExceptionHandler(MorePartsException e, WebRequest webRequest){
-        RobotFactoryExceptionResponse response = new RobotFactoryExceptionResponse(e.getMessage(), webRequest.getDescription(false), HttpStatus.UNPROCESSABLE_ENTITY);
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
-    @ExceptionHandler(MoreThanOneOptionForATypeOfPartException.class)
-    public ResponseEntity<Object> moreThanOneOptionForATypeOfPartExceptionHandler(MoreThanOneOptionForATypeOfPartException e, WebRequest webRequest){
-        RobotFactoryExceptionResponse response = new RobotFactoryExceptionResponse(e.getMessage(), webRequest.getDescription(false), HttpStatus.UNPROCESSABLE_ENTITY);
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
-    @ExceptionHandler(NotEnoughPartsException.class)
-    public ResponseEntity<Object> notEnoughPartsExceptionHandler(NotEnoughPartsException e, WebRequest webRequest){
-        RobotFactoryExceptionResponse response = new RobotFactoryExceptionResponse(e.getMessage(), webRequest.getDescription(false), HttpStatus.UNPROCESSABLE_ENTITY);
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
-    @ExceptionHandler(RanOutOfStockException.class)
-    public ResponseEntity<Object> ranOutOfStockExceptionHandler(RanOutOfStockException e, WebRequest webRequest){
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> ExceptionHandler(Exception e, WebRequest webRequest){
         RobotFactoryExceptionResponse response = new RobotFactoryExceptionResponse(e.getMessage(), webRequest.getDescription(false), HttpStatus.UNPROCESSABLE_ENTITY);
         return new ResponseEntity<>(response, response.getStatus());
     }
