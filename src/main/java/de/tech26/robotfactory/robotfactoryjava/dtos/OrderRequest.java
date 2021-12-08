@@ -1,25 +1,27 @@
 package de.tech26.robotfactory.robotfactoryjava.dtos;
 
-import de.tech26.robotfactory.robotfactoryjava.enums.RobotPartsEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 import java.util.List;
 
 public class OrderRequest {
 
-    private List<RobotPartsEnum> components;
+    @JsonProperty("components")
+    private List<String> componentsId;
 
-    public OrderRequest(List<RobotPartsEnum> components) {
-        this.components = components;
+    public OrderRequest(List<String> componentsId) {
+        this.componentsId = componentsId;
+    }
+
+    public List<String> getComponentsId() {
+        return componentsId;
+    }
+
+    public void setComponentsId(List<String> componentsId) {
+        this.componentsId = componentsId;
     }
 
     public OrderRequest() {
-    }
-
-    public List<RobotPartsEnum> getComponents() {
-        return components;
-    }
-
-    public void setComponents(List<RobotPartsEnum> components) {
-        this.components = components;
     }
 }

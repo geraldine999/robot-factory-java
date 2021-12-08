@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OrderResponse {
     @JsonProperty("order_id")
-    private int orderId;
+    private String orderId;
     private double total;
 
-    public OrderResponse(int orderId, double total) {
+    public OrderResponse(String orderId, double total) {
         this.orderId = orderId;
         this.total = total;
     }
@@ -15,11 +15,11 @@ public class OrderResponse {
     public OrderResponse() {
     }
 
-    public int getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
